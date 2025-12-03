@@ -1,0 +1,120 @@
+POST http://localhost:5000/api/faculty/single
+{
+"salutation": "Dr",
+"firstName": "Karthik",
+"lastName": "R",
+"gender": "Male",
+"dateOfBirth": "1980-05-15",
+"email": "karthik.hodcse@example.com",
+"mobileNumber": "9876543210",
+"qualification": "PhD",
+"workType": "Full Time",
+"employeeId": "EMP-CSE-001",
+"joiningDate": "2010-06-01",
+"jobTitle": "HOD",
+"designation": "hod",
+"reportingManager": "Principal",
+"department": "CSE",
+"noticePeriod": "90 days"
+}
+POST http://localhost:5000/api/faculty/excel-upload
+GET http://localhost:5000/api/faculty/
+GET / PUT / DELETE http://localhost:5000/api/faculty/id
+------------------------------------------------------------------------------
+POST http://localhost:5000/api/students/single
+{
+  "firstName": "Arun",
+  "lastName": "Kumar",
+  "registerNumber": "22CSE001",
+  "rollNumber": "CSE-01",
+  "department": "CSE",
+  "year": "First Year",
+  "email": "arun.22cse001@example.com",
+  "mobileNumber": "9123456780"
+}
+POST http://localhost:5000/api/students/excel-upload
+GET http://localhost:5000/api/students/
+GET / PUT / DELETE http://localhost:5000/api/students/id
+------------------------------------------------------------------------------
+POST http://localhost:5000/api/subjects/single
+{
+  "subjectCode": "CSE101",
+  "name": "Programming in C",
+  "regulation": "R2023",
+  "department": "CSE",
+  "creditPoint": 4
+}
+
+POST http://localhost:5000/api/subjects/excel-upload
+GET http://localhost:5000/api/subjects/
+GET / PUT / DELETE http://localhost:5000/api/subjects/id
+------------------------------------------------------------------------------
+POST http://localhost:5000/api/auth/login
+POST http://localhost:5000/api/auth/forgot-password
+email
+POST http://localhost:5000/api/auth/reset-password
+email otp newPassword
+
+------------------------------------------------------------------------------
+GET http://localhost:5000/api/reports/students/years
+{
+    "success": true,
+    "data": {
+        "total": 149,
+        "first": 148,
+        "second": 1,
+        "third": 0,
+        "fourth": 0
+    }
+}
+GET http://localhost:5000/api/reports/students/departments
+{
+    "success": true,
+    "data": {
+        "ECE": {
+            "first": 18,
+            "second": 1,
+            "third": 0,
+            "fourth": 0
+        },
+        "CSE": {
+            "first": 130,
+            "second": 0,
+            "third": 0,
+            "fourth": 0
+        }
+    }
+}
+------------------------------------------------------------------------------
+GET http://localhost:5000/api/reports/faculty/summary
+{
+    "success": true,
+    "data": {
+        "totalFaculty": 7,
+        "deanAndHod": 2,
+        "professor": 2,
+        "associateAndAssistant": 3
+    }
+}
+
+GET http://localhost:5000/api/reports/faculty/departments
+{
+    "success": true,
+    "data": {
+        "CSE": {
+            "professor": 1,
+            "associateProfessor": 1,
+            "assistantProfessor": 1
+        },
+        "ECE": {
+            "professor": 0,
+            "associateProfessor": 0,
+            "assistantProfessor": 1
+        },
+        "IT": {
+            "professor": 1,
+            "associateProfessor": 0,
+            "assistantProfessor": 0
+        }
+    }
+}
