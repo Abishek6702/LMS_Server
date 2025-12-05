@@ -23,11 +23,21 @@ const getStudentYearCounts = async (req, res) => {
 // 2) department-wise 1st/2nd/3rd/4th year
 const getDepartmentYearCounts = async (req, res) => {
   try {
+    const { search } = req.query;
+
+    const matchStage = {};
+
+    // Apply department filter if search query exists
+    if (search) {
+      matchStage.department = { $regex: search, $options: "i" };
+    }
+
     const agg = await Student.aggregate([
+      { $match: matchStage },
       {
         $group: {
           _id: { department: "$department", year: "$year" },
-          count: { $sum: 1 } // [web:176][web:178]
+          count: { $sum: 1 }
         }
       }
     ]);
@@ -38,9 +48,16 @@ const getDepartmentYearCounts = async (req, res) => {
     agg.forEach(row => {
       const dept = row._id.department;
       const year = row._id.year;
+
       if (!result[dept]) {
-        result[dept] = { first: 0, second: 0, third: 0, fourth: 0 };
+        result[dept] = {
+          first: 0,
+          second: 0,
+          third: 0,
+          fourth: 0
+        };
       }
+
       if (year === "First Year") result[dept].first = row.count;
       if (year === "Second Year") result[dept].second = row.count;
       if (year === "Third Year") result[dept].third = row.count;
@@ -52,6 +69,7 @@ const getDepartmentYearCounts = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 // 3) faculty summary counts
 const getFacultySummaryCounts = async (req, res) => {
   try {
@@ -82,17 +100,24 @@ const getFacultySummaryCounts = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-// 4) department-wise professor / associate / assistant counts
+
 const getDepartmentFacultyRanks = async (req, res) => {
   try {
+    const { search } = req.query; // get ?search= from frontend
+
+    const matchStage = {
+      designation: {
+        $in: ["professor", "assistant professor", "associate professor","dean","hod"]
+      }
+    };
+
+    // If search query exists, apply case-insensitive department filter
+    if (search) {
+      matchStage.department = { $regex: search, $options: "i" };
+    }
+
     const agg = await Faculty.aggregate([
-      {
-        $match: {
-          designation: {
-            $in: ["professor", "assistant professor", "associate professor"]
-          }
-        }
-      },
+      { $match: matchStage },
       {
         $group: {
           _id: { department: "$department", designation: "$designation" },
@@ -106,6 +131,7 @@ const getDepartmentFacultyRanks = async (req, res) => {
     agg.forEach(row => {
       const dept = row._id.department;
       const desig = row._id.designation;
+
       if (!result[dept]) {
         result[dept] = {
           professor: 0,
@@ -113,11 +139,10 @@ const getDepartmentFacultyRanks = async (req, res) => {
           assistantProfessor: 0
         };
       }
+
       if (desig === "professor") result[dept].professor = row.count;
-      if (desig === "associate professor")
-        result[dept].associateProfessor = row.count;
-      if (desig === "assistant professor")
-        result[dept].assistantProfessor = row.count;
+      if (desig === "associate professor") result[dept].associateProfessor = row.count;
+      if (desig === "assistant professor") result[dept].assistantProfessor = row.count;
     });
 
     res.json({ success: true, data: result });

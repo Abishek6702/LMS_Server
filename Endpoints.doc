@@ -67,19 +67,24 @@ GET http://localhost:5000/api/reports/students/years
         "fourth": 0
     }
 }
-GET http://localhost:5000/api/reports/students/departments
+GET http://localhost:5000/api/reports/students/departments?search=cse
+{
+    "success": true,
+    "data": {
+        "CSE": {
+            "first": 130,
+            "second": 0,
+            "third": 0,
+            "fourth": 0
+        }
+    }
+}
 {
     "success": true,
     "data": {
         "ECE": {
             "first": 18,
             "second": 1,
-            "third": 0,
-            "fourth": 0
-        },
-        "CSE": {
-            "first": 130,
-            "second": 0,
             "third": 0,
             "fourth": 0
         }
@@ -97,24 +102,14 @@ GET http://localhost:5000/api/reports/faculty/summary
     }
 }
 
-GET http://localhost:5000/api/reports/faculty/departments
+GET http://localhost:5000/api/reports/faculty/departments?search=ece
 {
     "success": true,
     "data": {
-        "CSE": {
-            "professor": 1,
-            "associateProfessor": 1,
-            "assistantProfessor": 1
-        },
         "ECE": {
             "professor": 0,
             "associateProfessor": 0,
             "assistantProfessor": 1
-        },
-        "IT": {
-            "professor": 1,
-            "associateProfessor": 0,
-            "assistantProfessor": 0
         }
     }
 }

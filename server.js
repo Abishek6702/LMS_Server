@@ -34,10 +34,10 @@ app.use(
 connectDB();
 
 app.use(express.json());
+app.use("/api/reports", reportRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/subjects", subjectRoutes);
-app.use("/api/reports", reportRoutes);
 
 app.use("/api/auth", authRoutes);
 
