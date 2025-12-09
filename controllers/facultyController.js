@@ -139,11 +139,97 @@ const deleteFaculty = async (req, res) => {
   }
 };
 
+const getEligibleHodAdmins = async (req, res) => {
+  try {
+    const { department } = req.query;
+    if (!department) {
+      return res.status(400).json({ success: false, message: "department is required" });
+    }
+
+    const faculties = await Faculty.find({
+      department,
+      designation: { $ne: "hod" }   
+    }).select("firstName lastName email designation department isAllocatedAdmin");
+
+    res.json({ success: true, data: faculties });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+const allocateHodAdmin = async (req, res) => {
+  try {
+    const { department, facultyId } = req.body;
+    if (!department || !facultyId) {
+      return res.status(400).json({
+        success: false,
+        message: "department and facultyId are required"
+      });
+    }
+
+    // 1) Reset all in this department
+    await Faculty.updateMany(
+      { department },
+      { $set: { isAllocatedAdmin: false } }
+    );
+
+    // 2) Set true for selected faculty (must be same dept, not real HOD)
+    const updated = await Faculty.findOneAndUpdate(
+      {
+        _id: facultyId,
+        department,
+        designation: { $ne: "hod" }
+      },
+      { $set: { isAllocatedAdmin: true } },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        message: "Faculty not found in this department or is actual HOD"
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "HOD access allocated to faculty",
+      data: updated
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const getCurrentHodAdmin = async (req, res) => {
+  try {
+    const { department } = req.query;
+    if (!department) {
+      return res.status(400).json({ success: false, message: "department is required" });
+    }
+
+    const faculty = await Faculty.findOne({
+      department,
+      isAllocatedAdmin: true
+    }).select("firstName lastName email designation department isAllocatedAdmin");
+
+    res.json({
+      success: true,
+      data: faculty  // null if no one allocated yet
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 module.exports = {
   addFacultySingle,
   addFacultyExcel,
   getAllFaculty,
   getFacultyById,
   updateFaculty,
-  deleteFaculty
+  deleteFaculty,
+  getEligibleHodAdmins,
+  allocateHodAdmin,
+  getCurrentHodAdmin
+
 };

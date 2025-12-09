@@ -6,6 +6,9 @@ const {
   getFacultyById,
   updateFaculty,
   deleteFaculty,
+  getEligibleHodAdmins,
+  allocateHodAdmin,
+  getCurrentHodAdmin
 } = require("../controllers/facultyController");
 const multer = require("multer");
 
@@ -17,6 +20,9 @@ const router = express.Router();
 router.post("/single", addFacultySingle);
 router.post("/excel-upload", upload.single("excel"), addFacultyExcel);
 router.get("/", getAllFaculty);
+router.get("/eligible", getEligibleHodAdmins);
+router.post("/allocate", allocateHodAdmin);
+router.get("/current", getCurrentHodAdmin);
 router.get("/:id", getFacultyById);
 router.put("/:id", updateFaculty);
 router.delete("/:id", deleteFaculty);

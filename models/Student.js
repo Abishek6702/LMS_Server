@@ -13,6 +13,7 @@ const studentSchema = new mongoose.Schema({
   },
   email: { type: String, required: true, unique: true },
   mobileNumber: { type: String, required: true },
+  academicYear: { type: String },
   section: { 
     type: String, 
     enum: ['A', 'B', 'unallocated'],

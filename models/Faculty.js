@@ -20,7 +20,8 @@ const facultySchema = new mongoose.Schema({
   },
   reportingManager: String,
   department: String,
-  noticePeriod: String
+  noticePeriod: String,
+  isAllocatedAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Faculty', facultySchema);

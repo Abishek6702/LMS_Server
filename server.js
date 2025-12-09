@@ -7,6 +7,7 @@ const studentRoutes = require("./routes/studentRoutes");
 const subjectRoutes = require("./routes/subjectRoutes");
 const authRoutes = require("./routes/authRoutes");
 
+const sectionRoutes = require("./routes/sectionRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const fs = require("fs");
 const path = require("path");
@@ -38,6 +39,8 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/subjects", subjectRoutes);
+
+app.use("/api/sections", sectionRoutes);
 
 app.use("/api/auth", authRoutes);
 

@@ -69,7 +69,8 @@ const login = async (req, res) => {
       extra = {
         name: faculty ? `${faculty.firstName} ${faculty.lastName}` : user.name,
         designation: faculty?.designation,
-        department: faculty?.department
+        department: faculty?.department,
+        isAllocatedAdmin:faculty?.isAllocatedAdmin,
       };
     } else if (user.userDetailModel === "Student") {
       const student = await Student.findById(user.userDetailId);
@@ -93,7 +94,9 @@ const login = async (req, res) => {
         role: user.role,
         name: extra.name,
         designation: extra.designation,
-        department: extra.department
+        department: extra.department,
+        isAllocatedAdmin:extra.isAllocatedAdmin,
+
       }
     });
   } catch (err) {

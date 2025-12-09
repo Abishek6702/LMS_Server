@@ -7,7 +7,9 @@ const generateToken = (user, extra) => {
     role: user.role,
     name: extra?.name,
     designation: extra?.designation,
-    department: extra?.department
+    department: extra?.department,
+    isAllocatedAdmin:extra?.isAllocatedAdmin,
+
   };
 
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "7d" });

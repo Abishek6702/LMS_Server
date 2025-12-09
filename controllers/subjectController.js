@@ -106,11 +106,109 @@ const deleteSubject = async (req, res) => {
   }
 };
 
+const filterSubjects = async (req, res) => {
+  try {
+    const { department, regulation, paperType, semester } = req.query;
+
+    const filter = {};
+
+    if (department) filter.department = department;
+    if (regulation) filter.regulation = regulation;
+    if (paperType) filter.paperType = paperType;
+    if (semester) filter.semester = Number(semester); // cast to number
+
+    const subjects = await Subject.find(filter).sort({ subjectCode: 1 });
+
+    res.json({
+      success: true,
+      count: subjects.length,
+      data: subjects
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// semester allocation edit unchek not worked
+// const allocateSemesterToSubjects = async (req, res) => {
+//   try {
+//     const { semester, subjectIds } = req.body;
+
+//     if (!semester || !Array.isArray(subjectIds) || subjectIds.length === 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "semester and subjectIds array are required"
+//       });
+//     }
+
+//     const sem = Number(semester);
+
+//     const result = await Subject.updateMany(
+//       { _id: { $in: subjectIds } },
+//       { $set: { semester: sem } }
+//     );
+
+//     res.json({
+//       success: true,
+//       message: "Semester allocated to subjects",
+//       modifiedCount: result.modifiedCount
+//     });
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// };
+
+const allocateSemesterFull = async (req, res) => {
+  try {
+    const { semester, department, regulation, paperType, subjectIds } = req.body;
+
+    if (!semester || !department || !regulation || !paperType) {
+      return res.status(400).json({
+        success: false,
+        message: "semester, department, regulation and paperType are required"
+      });
+    }
+
+    const sem = Number(semester);
+    const ids = Array.isArray(subjectIds) ? subjectIds : [];
+
+    // 1) Clear semester for subjects of this combo currently in this sem but NOT selected now
+    await Subject.updateMany(
+      {
+        department,
+        regulation,
+        paperType,
+        semester: sem,
+        _id: { $nin: ids }
+      },
+      { $set: { semester: null } }
+    );
+
+    // 2) Set semester for all selected subjects (if any)
+    if (ids.length > 0) {
+      await Subject.updateMany(
+        { _id: { $in: ids } },
+        { $set: { semester: sem } }
+      );
+    }
+
+    res.json({
+      success: true,
+      message: "Semester allocation updated successfully"
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 module.exports = {
   addSubjectSingle,
   addSubjectsMultiple,
   getAllSubjects,
   getSubjectById,
   updateSubject,
-  deleteSubject
+  deleteSubject,
+  filterSubjects,
+  // allocateSemesterToSubjects,
+  allocateSemesterFull
 };

@@ -113,3 +113,54 @@ GET http://localhost:5000/api/reports/faculty/departments?search=ece
         }
     }
 }
+-----------------------------------------------------------------------------------------------
+Semester allocation for subjectCode
+1. fetch enpoint 
+GET http://localhost:5000/api/subjects/filter?department=ECE&regulation=2023&paperType=theory
+2. Add semester to enpoint
+post http://localhost:5000/api/subjects/allocate-semester-full
+{
+  "semester": 2,
+  "department": "CSE",
+  "regulation": "2023",
+  "paperType": "theory",
+  "subjectIds": [
+    
+
+  ]
+}
+---------------------------------------------------------------------------------------------------
+Admin allocation for the department
+1. get the faculty who can be allocated
+http://localhost:5000/api/faculty/eligible?department=CSE
+2. add admin for that department
+http://localhost:5000/api/faculty/allocate
+
+{
+  "department": "CSE",
+  "facultyId": "692fff637feb5c9472a5938a"
+}
+
+3. get the faculty profile who has been allocated
+http://localhost:5000/api/faculty/current?department=CSE
+
+-----------------------------------------------------------------------------------------------------
+Hod Dashboard Section allocation
+1. get tortal years and sections respectively with count 
+GET http://localhost:5000/api/sections/years?department=ECE
+2. get list of student sis particular section
+GET http://localhost:5000/api/sections/students?department=CSE&year=First%20Year&section=A
+3. get list of sections to move student
+http://localhost:5000/api/sections/summary?department=CSE&academicYear=2025-2026&year=First%20Year
+4. allocate section to students
+POST http://localhost:5000/api/sections/change
+{
+  "department": "ECE",
+  "academicYear": "2025-2026",
+  "year": "Second Year",
+  "section": "A",
+  "studentIds": [
+    "6930020d05ed068109c971b5"
+  ]
+}
+
